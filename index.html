@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="eng" ng-app="myApp">
+<head>
+	<meta charset="UTF-8">
+	<title>Program Overview</title>
+
+
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="http://d3js.org/topojson.v1.min.js"></script>
+
+	<script src="lib/angular/angular.min.js"></script>
+	<script src="lib/angular/angular-route.min.js"></script>
+
+	<script src="js/app.js"></script>
+	<script src="js/controllers.js"></script>
+
+<!-- highlight provides color coding of sample js code -->
+	<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+
+</head>
+<body>
+		<div class="basicBarChart1" ng-controller="OverviewController"></div>	
+	<script>
+var w = parseInt(d3.select('.basicBarChart1').style('width'));
+
+var margin = {top: 20, right: 20, bottom: 20, left: 30},
+    width_stackedbar = w - margin.left - margin.right,
+    height_stackedbar = 250 - margin.top - margin.bottom,
+    barWidth = 40;
+    barOffset = 5;
+var centerx = w/2 - margin.left
+
+//var xScale = d3.scale.linear().range([margin.left,width_stackedbar])
+var yScale = d3.scale.linear().range([height_stackedbar, 0]);
+//var yScale = d3.scale.linear().range([margin.top, height_stackedbar - margin.bottom])
+
+var basicBar1 = createSvg(".basicBarChart1","Data Join using .data(data)")
+
+function random() {
+	var data = d3.range(~~(Math.random() * 10)).map(function(d,i) { 
+		return ~~(Math.random() * 100 + 20) } );
+		data.unshift(10)
+		//return data//.sort(function(a,b) { return a-b })
+		update1(data)
+}
+
+function update1(data) {
+	console.log("inside update1")
+
+	var rect1 = basicBar1.selectAll('.rects').data(data)
+
+	rect1
+		.classed("update",true)
+		.transition().duration(2500) 
+		.style("fill", "green")
+		.attr("x", function(d,i) { 	return i * (barWidth + barOffset)})
+
+	rect1.enter().append('rect')
+		.attr("width",barWidth)
+		.attr("x",function(d,i) { return i * (barWidth+ barOffset)})
+		// .attr("height", function(d) { return height_stackedbar - yScale(d)})
+		// .attr("y",function(d) { return yScale(d) } )
+		.attr("height", function(d) { return d})
+		.attr("y",function(d) { return height_stackedbar - d } )
+		.style("fill", "steelblue")
+		.attr("class","rects")
+		.classed("enter",true)
+
+	rect1.exit().transition().duration(2000).style("fill","black").attr("height",0).remove()
+}
+
+function createSvg(selection,title) { 
+	var selection = d3.select(selection).append("svg")
+    .attr("width", width_stackedbar + margin.left + margin.right)
+    .attr("height", height_stackedbar + margin.top + margin.bottom)
+    .append('g').attr("transform","translate(" + margin.left + "," + margin.top + ")") 
+
+  selection.append('rect')
+		.attr("width",width_stackedbar)
+		.attr("height", height_stackedbar)
+		.attr("y", 0)
+		.attr("x",0)
+		.style("stroke","black")
+		.style("stroke-width",1)
+		.style("fill","none")
+
+	selection.append('g').attr("transform","translate("+ centerx + ",30)")
+	.append('text').text(title)
+	.attr("text-anchor","middle")
+
+	return selection
+}
+
+setInterval(function() { random() } ,3000 )
+	</script>
+
+	
+	<div class="main" ng-view>
+	<!-- <div><ng-view></ng-view> -->
+	<!--ngView is a directive that complements the $route service by including the rendered template of the current route into the main layout (index.html) file. Every time the current route changes, the included view changes with it according to the configuration of the $route service.
+
+	Requires the ngRoute module to be installed.
+	-->
+	</div>
+</body>
+</html>
+
