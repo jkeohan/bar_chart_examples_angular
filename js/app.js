@@ -1,6 +1,6 @@
 var myApp = angular.module('myApp', [
-  'ngRoute',//turns on deep linking
-  'programControllers'
+  'ngRoute'//turns on deep linking
+  // 'programControllers'
 ]);
 
 myApp.config(['$routeProvider', function($routeProvider) {//$routeProvider service
@@ -14,7 +14,9 @@ myApp.config(['$routeProvider', function($routeProvider) {//$routeProvider servi
 	});
 }]);
 
+// var myApp = angular.module('myApp', []);
 
-
-
-
+// When AngularJS is used to compile HTML, the workflow typically looks something like this:
+// compile - top-down.
+// link - bottom-up.
+// $digest - top-down (repeat until no dirty data).
